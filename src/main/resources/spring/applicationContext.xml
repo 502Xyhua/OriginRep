@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
+        <!--引入属性文件-->
+        <context:property-placeholder location="classpath*:app.properties" />
+        <!--注解驱动-->
+        <context:annotation-config />
+        <!--扫描包:排除Controller注解类-->
+        <context:component-scan base-package="com.xyhua">
+            <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        </context:component-scan>
+
+        <!--配置druid数据连接池-->
+        <bean class="com.alibaba.druid.pool.DruidDataSource" id="druidDataSource" init-method="init" destroy-method="close">
+                <!--配置driver-->
+                <property name="driverClassName" value="oracle.jdbc.OracleDriver"/>
+                <!--配置url,用户,密码-->
+                <property name="url" value="${local.url}"/>
+                <property name="username" value="${local.user}"/>
+                <property name="password" value="${local.password}"/>
+                <!--配置初始大小,最大,最小-->
+                <property name="initialSize" value="${druid.initialSize}" />
+                <property name="maxActive" value="${druid.maxActive}" />
+                <property name="minIdle" value="${druid.minIdle}" />
+        </bean>
+        <!--整合mybatis-->
+        <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="sqlSessionFactory">
+                <property name="dataSource" ref="druidDataSource"/>
+        </bean>
+        <!--配置StudentMapper-->
+        <bean class="org.mybatis.spring.mapper.MapperFactoryBean" id="studentMapper">
+                <property name="mapperInterface" value="com.xyhua.mapper.StudentMapper"/>
+                <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+        </bean>
+</beans>
