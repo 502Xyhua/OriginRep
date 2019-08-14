@@ -1,4 +1,3 @@
 xyhua的maven工程
-simple & fast
-
-mastermaster master
+simple and fast
+mastermaster
